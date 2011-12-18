@@ -11,7 +11,8 @@ namespace GitBin.Commands
 
         public void Execute()
         {
-            Console.Error.WriteLine("usage: git bin <command> [<args>]\n");
+            Console.Error.WriteLine("usage: git bin [--version]");
+            Console.Error.WriteLine("               <command> [<args>]\n");
             Console.Error.WriteLine("List of available commands:");
             Console.Error.WriteLine("  clean    Clean filter. Should only be used with .gitattributes filtering.");
             Console.Error.WriteLine("  gc       Clean up unnecessary files in the local cache directory.");

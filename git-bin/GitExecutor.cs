@@ -3,21 +3,20 @@ using System.Diagnostics;
 
 namespace GitBin
 {
-    public interface IGitConfigExecutor
+    public interface IGitExecutor
     {
         long? GetLong(string name);
         string GetString(string name);
     }
 
-    public class GitConfigExecutor : IGitConfigExecutor
+    public class GitExecutor : IGitExecutor
     {
         private const int Success = 0;
         private const int MissingSectionOrKey = 1;
-        private const int InvalidConfigFile = 3;
 
-        public long? GetLong(string name)
+        public long? GetLong(string arguments)
         {
-            var rawValue = ExecuteGit("--int", name);
+            var rawValue = ExecuteGit(arguments);
             
             if (string.IsNullOrEmpty(rawValue))
                 return null;
@@ -25,19 +24,19 @@ namespace GitBin
             return Convert.ToInt64(rawValue);
         }
 
-        public string GetString(string name)
+        public string GetString(string arguments)
         {
-            return ExecuteGit(string.Empty, name);
+            return ExecuteGit(arguments);
         }
 
-        private static string ExecuteGit(string additionalConfigParameters, string name)
+        private static string ExecuteGit(string arguments)
         {
             var process = new Process();
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.CreateNoWindow = true;
             process.StartInfo.RedirectStandardOutput = true;
             process.StartInfo.FileName = "git";
-            process.StartInfo.Arguments = "config " + additionalConfigParameters + " git-bin." + name;
+            process.StartInfo.Arguments = arguments;
             process.Start();
             
             string output = process.StandardOutput.ReadToEnd();
@@ -49,11 +48,8 @@ namespace GitBin
                 case MissingSectionOrKey:
                     return output.Trim();
 
-                case InvalidConfigFile:
-                    throw new ಠ_ಠ(".gitconfig file is invalid");
-
                 default:
-                    throw new ಠ_ಠ("git config exited with error code [" + process.ExitCode + "] while retrieving config value for " + name);
+                    throw new ಠ_ಠ("git exited with error code [" + process.ExitCode + "] while executing command [" + arguments + ']');
             }
         }
     }

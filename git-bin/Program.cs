@@ -7,7 +7,7 @@ namespace GitBin
     {
         static int Main(string[] args)
         {
-            Console.Error.WriteLine("[git-bin] Received command line: `{0}`", string.Join(" ", args));
+//            Console.Error.WriteLine("[git-bin] Received command line: `{0}`", string.Join(" ", args));
 
             var builder = new Builder();
             ApplicationRegistrations.Register(builder);
@@ -29,12 +29,12 @@ namespace GitBin
             }
             catch (ಠ_ಠ lod)
             {
-                Console.Error.WriteLine("[git-bin] Error: " + lod.Message);
+                GitBinConsole.WriteLine(lod.Message);
                 return 1;
             }
             catch (Exception e)
             {
-                Console.Error.WriteLine("[git-bin] Uncaught exception, please report this bug." + e);
+                GitBinConsole.WriteLine("Uncaught exception, please report this bug." + e);
                 return 2;
             }
 

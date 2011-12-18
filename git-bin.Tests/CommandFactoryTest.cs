@@ -55,7 +55,7 @@ namespace git_bin.Tests
         [Test]
         public void GetCommand_CleanCommandArgument_ReturnsCleanCommand()
         {
-            var cleanCommand = new CleanCommand(null, null);
+            var cleanCommand = new CleanCommand(null, null, null);
             Func<string[], CleanCommand> factory = x => cleanCommand;
 
             var target = new CommandFactory(null, factory, null);

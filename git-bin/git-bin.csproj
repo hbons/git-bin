@@ -48,6 +48,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GitBinConsole.cs" />
+    <Compile Include="CacheManager.cs" />
+    <Compile Include="GitBinDocument.cs" />
     <Compile Include="CommandFactory.cs" />
     <Compile Include="Commands\CleanCommand.cs" />
     <Compile Include="Commands\ICommand.cs" />
@@ -55,7 +58,7 @@
     <Compile Include="Commands\SmudgeCommand.cs" />
     <Compile Include="ApplicationRegistrations.cs" />
     <Compile Include="ConfigurationProvider.cs" />
-    <Compile Include="GitConfigExecutor.cs" />
+    <Compile Include="GitExecutor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
