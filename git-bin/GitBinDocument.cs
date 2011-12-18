@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using Newtonsoft.Json;
 
 namespace GitBin
 {
@@ -19,7 +22,30 @@ namespace GitBin
 
         public override string ToString()
         {
-            return "mark is awesome";
+            var sb = new StringBuilder();
+            var sw = new StringWriter(sb);
+            
+            using (JsonWriter jsonWriter = new JsonTextWriter(sw))
+            {
+                jsonWriter.Formatting = Formatting.Indented;
+
+                jsonWriter.WriteStartObject();
+
+                jsonWriter.WritePropertyName("filename");
+                jsonWriter.WriteValue(_filename);
+
+                jsonWriter.WritePropertyName("chunks");
+                jsonWriter.WriteStartArray();
+                foreach (var hash in _chunkHashes)
+                {
+                    jsonWriter.WriteValue(hash);
+                }
+                jsonWriter.WriteEndArray();
+
+                jsonWriter.WriteEndObject();
+            }
+
+            return sb.ToString();
         }
     }
 }

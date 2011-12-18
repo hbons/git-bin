@@ -42,8 +42,6 @@ namespace GitBin.Commands
 
             var stdin = Console.OpenStandardInput();
 
-//            int TEMP_chunkCount = 0;
-
             do
             {
                 numberOfBytesRead = stdin.Read(chunkBuffer, 0, chunkBuffer.Length);
@@ -53,15 +51,12 @@ namespace GitBin.Commands
                     var hash = GetHashForChunk(chunkBuffer, numberOfBytesRead);
                     _cacheManager.WriteFileToCache(hash, chunkBuffer, numberOfBytesRead);
                     cleanedDocument.RecordChunk(hash);
-
-//                    Console.Error.WriteLine("For file {0}, chunk {1}, computed hash of {2}", _filename, TEMP_chunkCount, hash);
-
-//                    TEMP_chunkCount++;
                 }
             } while (numberOfBytesRead == chunkBuffer.Length);
 
             Console.Write(cleanedDocument.ToString());
-            Console.Out.Close();
+//            GitBinConsole.Write(cleanedDocument.ToString());
+            Console.Out.Flush();
         }
 
         private static string GetHashForChunk(byte[] chunkBuffer, int chunkLength)

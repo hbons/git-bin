@@ -34,7 +34,7 @@ namespace GitBin
             }
             catch (Exception e)
             {
-                GitBinConsole.WriteLine("Uncaught exception, please report this bug." + e);
+                GitBinConsole.WriteLine("Uncaught exception, please report this bug! " + e);
                 return 2;
             }
 

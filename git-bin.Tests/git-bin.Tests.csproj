@@ -57,6 +57,7 @@
     <Compile Include="CommandFactoryTest.cs" />
     <Compile Include="Commands\CleanCommandTest.cs" />
     <Compile Include="ConfigurationProviderTest.cs" />
+    <Compile Include="GitBinDocumentTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
