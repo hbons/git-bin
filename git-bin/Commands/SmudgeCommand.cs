@@ -25,13 +25,15 @@ namespace GitBin.Commands
         public void Execute()
         {
             var stdin = Console.OpenStandardInput();
-            var document = new GitBinDocument(stdin);
+            var document = GitBinDocument.FromYaml(new StreamReader(stdin));
 
-            GitBinConsole.WriteLine("Smudging {0}...", document.Filename);
+            GitBinConsole.Write("Smudging {0}...", document.Filename);
 
             DownloadMissingFiles(document.ChunkHashes);
 
             OutputReassembledChunks(document.ChunkHashes);
+
+            GitBinConsole.Write(" Done\n");
         }
 
         private void DownloadMissingFiles(IEnumerable<string> chunkHashes)
@@ -40,13 +42,11 @@ namespace GitBin.Commands
 
             if (filesToDownload.Length > 0)
             {
-                GitBinConsole.Write(" downloading {0} chunks", filesToDownload.Length);
+                GitBinConsole.Write(" Downloading {0} chunks...", filesToDownload.Length);
 
                 foreach (var file in filesToDownload)
                 {
-                    _remote.DownloadFileTo(_cacheManager.GetPathForFile(file), file);
-//                    var stream = _remote.DownloadFile(file);
-//                    _cacheManager.WriteFileToCache(file, stream);
+                    _remote.DownloadFile(_cacheManager.GetPathForFile(file), file);
                 }
             }
         }

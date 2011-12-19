@@ -40,9 +40,6 @@
     <Reference Include="AWSSDK">
       <HintPath>..\packages\AWSSDK.1.3.19.0\lib\AWSSDK.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.4.0.5\lib\net35\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="Objector">
       <HintPath>..\packages\Objector.1.0.0.72\lib\net35\Objector.dll</HintPath>
     </Reference>
@@ -52,6 +49,12 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="YamlDotNet.Core">
+      <HintPath>..\packages\YamlDotNet.Core.1.1.9\lib\YamlDotNet.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="YamlDotNet.RepresentationModel">
+      <HintPath>..\packages\YamlDotNet.RepresentationModel.1.1.9\lib\YamlDotNet.RepresentationModel.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\PushCommand.cs" />

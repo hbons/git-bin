@@ -195,13 +195,14 @@ namespace git_bin.Tests
         [Test]
         public void CacheDirectory_HasValue_GetsSet()
         {
-            string dir = "directory";
+            string gitDir = "directory";
+            string expectedDir = "directory\\git-bin";
 
-            _gitExecutor.Setup(x => x.GetString("rev-parse --git-dir")).Returns(dir);
+            _gitExecutor.Setup(x => x.GetString("rev-parse --git-dir")).Returns(gitDir);
 
             var target = new ConfigurationProvider(_gitExecutor.Object);
 
-            Assert.AreEqual(dir, target.CacheDirectory);
+            Assert.AreEqual(expectedDir, target.CacheDirectory);
         }
 
         [Test]

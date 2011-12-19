@@ -7,30 +7,24 @@ namespace git_bin.Tests
     [TestFixture]
     public class GitBinDocumentTest
     {
+        private string expectedYaml = "Filename: name\r\nChunkHashes:\r\n- abcde\r\n- zyxwv\r\n";
+
         [Test]
-        public void ToString_ProducesValidJson()
+        public void ToYaml_ProducesValidYaml()
         {
             var doc = new GitBinDocument("name");
             doc.RecordChunk("abcde");
             doc.RecordChunk("zyxwv");
 
-            var expected = "{\r\n  \"filename\": \"name\",\r\n  \"chunks\": [\r\n    \"abcde\",\r\n    \"zyxwv\"\r\n  ]\r\n}";
+            var actualYaml = GitBinDocument.ToYaml(doc);
 
-            Assert.AreEqual(expected, doc.ToString());
+            Assert.AreEqual(expectedYaml, actualYaml);
         }
 
         [Test]
-        public void Ctor_Stream_DeserializedCorrectly()
+        public void FromYaml_DeserializedCorrectly()
         {
-            var expected = "{\r\n  \"filename\": \"name\",\r\n  \"chunks\": [\r\n    \"abcde\",\r\n    \"zyxwv\"\r\n  ]\r\n}";
-            
-            var stream = new MemoryStream();
-            var streamWriter = new StreamWriter(stream);
-            streamWriter.Write(expected);
-            streamWriter.Flush();
-            stream.Position = 0;
-
-            var target = new GitBinDocument(stream);
+            var target = GitBinDocument.FromYaml(new StringReader(expectedYaml));
 
             Assert.AreEqual("name", target.Filename);
             Assert.AreEqual(2, target.ChunkHashes.Count);

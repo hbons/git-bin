@@ -55,7 +55,7 @@ namespace git_bin.Tests
         [Test]
         public void GetCommand_CleanCommandArgument_ReturnsCleanCommand()
         {
-            var cleanCommand = new CleanCommand(null, null, null);
+            var cleanCommand = new CleanCommand(null, null, new []{"abc"});
             Func<string[], CleanCommand> factory = x => cleanCommand;
 
             var target = new CommandFactory(null, factory, null, null);
@@ -87,7 +87,7 @@ namespace git_bin.Tests
         [Test]
         public void GetCommand_SmudgeCommandArgument_ReturnsSmudgeCommand()
         {
-            var smudgeCommand = new SmudgeCommand(null, null, null);
+            var smudgeCommand = new SmudgeCommand(null, null, new string[0]);
             Func<string[], SmudgeCommand> factory = x => smudgeCommand;
 
             var target = new CommandFactory(null, null, factory, null);

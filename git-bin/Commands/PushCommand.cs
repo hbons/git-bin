@@ -27,12 +27,9 @@ namespace GitBin.Commands
 
             GitBinConsole.WriteLine("Uploading {0} chunks", filesToUpload.Count);
 
-            foreach (var filename in filesToUpload)
+            foreach (var file in filesToUpload)
             {
-                var contents = _cacheManager.ReadFileFromCache(filename);
-                var stream = new MemoryStream(contents);
-
-                _remote.UploadFile(filename, stream);
+                _remote.UploadFile(_cacheManager.GetPathForFile(file), file);
             }
         }
     }

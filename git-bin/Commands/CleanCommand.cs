@@ -28,7 +28,7 @@ namespace GitBin.Commands
         {
             GitBinConsole.WriteLine("Cleaning {0}", _filename);
 
-            var cleanedDocument = new GitBinDocument(_filename);
+            var document = new GitBinDocument(_filename);
 
             var chunkBuffer = new byte[_configurationProvider.ChunkSize];
             int numberOfBytesRead;
@@ -43,11 +43,11 @@ namespace GitBin.Commands
                 {
                     var hash = GetHashForChunk(chunkBuffer, numberOfBytesRead);
                     _cacheManager.WriteFileToCache(hash, chunkBuffer, numberOfBytesRead);
-                    cleanedDocument.RecordChunk(hash);
+                    document.RecordChunk(hash);
                 }
             } while (numberOfBytesRead == chunkBuffer.Length);
 
-            Console.Write(cleanedDocument.ToString());
+            Console.Write(GitBinDocument.ToYaml(document));
             Console.Out.Flush();
         }
 
