@@ -4,11 +4,6 @@ namespace GitBin.Commands
 {
     public class ShowUsageCommand : ICommand
     {
-        public bool CanExecute
-        {
-            get { return true; }
-        }
-
         public void Execute()
         {
             Console.Error.WriteLine("usage: git bin [--version]");

@@ -1,4 +1,5 @@
-﻿using GitBin;
+﻿using System;
+using GitBin;
 using GitBin.Commands;
 using Moq;
 using NUnit.Framework;
@@ -19,31 +20,29 @@ namespace git_bin.Tests.Commands
         }
 
         [Test]
-        public void Ctor_OneArgument_CanExecuteIsTrue()
+        public void Ctor_OneArgument_DoesNotThrow()
         {
-            var oneArgument = new CleanCommand(
-                _configurationProvider.Object,
-                _cacheManager.Object,
-                new[] {"filename"});
-
-            Assert.IsTrue(oneArgument.CanExecute);
+            Assert.DoesNotThrow(() => 
+                new CleanCommand(
+                    _configurationProvider.Object,
+                    _cacheManager.Object,
+                    new[] {"filename"}));
         }
 
         [Test]
-        public void Ctor_WrongNumberOfArguments_CanExecuteIsFalse()
+        public void Ctor_WrongNumberOfArguments_Throws()
         {
-            var noArguments = new CleanCommand(
-                _configurationProvider.Object,
-                _cacheManager.Object,
-                new string[0]);
+            Assert.Throws<ArgumentException>(() => 
+                new CleanCommand(
+                    _configurationProvider.Object,
+                    _cacheManager.Object,
+                    new string[0]));
 
-            var moreThanOneArgument = new CleanCommand(
-                _configurationProvider.Object,
-                _cacheManager.Object,
-                new[] {"a", "b", "c"});
-
-            Assert.IsFalse(noArguments.CanExecute);
-            Assert.IsFalse(moreThanOneArgument.CanExecute);
+            Assert.Throws<ArgumentException>(() =>
+                new CleanCommand(
+                    _configurationProvider.Object,
+                    _cacheManager.Object,
+                    new[] {"a", "b", "c"}));
         }
     }
 }

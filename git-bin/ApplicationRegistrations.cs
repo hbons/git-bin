@@ -1,4 +1,5 @@
 ﻿using GitBin.Commands;
+using GitBin.Remotes;
 using Objector;
 
 namespace GitBin
@@ -11,6 +12,10 @@ namespace GitBin
                 .InNamespaceOf<CommandFactory>()
                 .AsImplementedInterfaces();
 
+            builder.RegisterAssembly(typeof (IRemote).Assembly)
+                .InNamespaceOf<IRemote>()
+                .AsImplementedInterfaces();
+
             builder.RegisterAssembly(typeof (CleanCommand).Assembly)
                 .InNamespaceOf<CleanCommand>()
                 .AsSelf();
@@ -18,6 +23,7 @@ namespace GitBin
             builder.RegisterFactory<ShowUsageCommand>();
             builder.RegisterFactory<string[], CleanCommand>();
             builder.RegisterFactory<string[], SmudgeCommand>();
+            builder.RegisterFactory<string[], PushCommand>();
         }
     }
 }

@@ -10,25 +10,18 @@ namespace GitBin.Commands
         private readonly ICacheManager _cacheManager;
         private readonly string _filename;
 
-        public bool CanExecute { get; private set; }
-
         public CleanCommand(
             IConfigurationProvider configurationProvider,
             ICacheManager cacheManager,
             string[] args)
         {
+            if (args.Length != 1)
+                throw new ArgumentException();
+
             _configurationProvider = configurationProvider;
             _cacheManager = cacheManager;
 
-            if (args.Length != 1)
-            {
-                this.CanExecute = false;
-            }
-            else
-            {
-                this.CanExecute = true;
-                _filename = args[0];
-            }
+            _filename = args[0];
         }
 
         public void Execute()
@@ -55,7 +48,6 @@ namespace GitBin.Commands
             } while (numberOfBytesRead == chunkBuffer.Length);
 
             Console.Write(cleanedDocument.ToString());
-//            GitBinConsole.Write(cleanedDocument.ToString());
             Console.Out.Flush();
         }
 

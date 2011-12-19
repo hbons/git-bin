@@ -22,7 +22,7 @@ namespace git_bin.Tests
                                   return null;
                               };
 
-            var target = new CommandFactory(factory, null, null);
+            var target = new CommandFactory(factory, null, null, null);
             target.GetShowUsageCommand();
 
             Assert.IsTrue(wasShowUsageCommandFactoryCalled);
@@ -34,7 +34,7 @@ namespace git_bin.Tests
             var showUsageCommand = new ShowUsageCommand();
             Func<ShowUsageCommand> factory = () => showUsageCommand;
 
-            var target = new CommandFactory(factory, null, null);
+            var target = new CommandFactory(factory, null, null, null);
             var command = target.GetCommand(new []{"invalid"});
 
             Assert.AreSame(showUsageCommand, command);
@@ -46,7 +46,7 @@ namespace git_bin.Tests
             var showUsageCommand = new ShowUsageCommand();
             Func<ShowUsageCommand> factory = () => showUsageCommand;
 
-            var target = new CommandFactory(factory, null, null);
+            var target = new CommandFactory(factory, null, null, null);
             var command = target.GetCommand(new string[0]);
 
             Assert.AreSame(showUsageCommand, command);
@@ -58,7 +58,7 @@ namespace git_bin.Tests
             var cleanCommand = new CleanCommand(null, null, null);
             Func<string[], CleanCommand> factory = x => cleanCommand;
 
-            var target = new CommandFactory(null, factory, null);
+            var target = new CommandFactory(null, factory, null, null);
             var command = target.GetCommand(new[] { CommandFactory.CleanArgument });
 
             Assert.AreSame(cleanCommand, command);
@@ -78,7 +78,7 @@ namespace git_bin.Tests
                                                            return null;
                                                        };
 
-            var target = new CommandFactory(null, factory, null);
+            var target = new CommandFactory(null, factory, null, null);
             target.GetCommand(inputArguments);
 
             Assert.IsTrue(wasInvoked);
@@ -87,14 +87,45 @@ namespace git_bin.Tests
         [Test]
         public void GetCommand_SmudgeCommandArgument_ReturnsSmudgeCommand()
         {
-            var smudgeCommand = new SmudgeCommand(null);
+            var smudgeCommand = new SmudgeCommand(null, null, null);
             Func<string[], SmudgeCommand> factory = x => smudgeCommand;
 
-            var target = new CommandFactory(null, null, factory);
+            var target = new CommandFactory(null, null, factory, null);
             var command = target.GetCommand(new[] { CommandFactory.SmudgeArgument });
 
             Assert.AreSame(smudgeCommand, command);
         }
 
+        [Test]
+        public void GetCommand_PushCommandArgument_ReturnsPushCommand()
+        {
+            var pushCommand = new PushCommand(null, null, null);
+            Func<string[], PushCommand> factory = x => pushCommand;
+
+            var target = new CommandFactory(null, null, null, factory);
+            var command = target.GetCommand(new[] { CommandFactory.PushArgument });
+
+            Assert.AreSame(pushCommand, command);
+        }
+
+        [Test]
+        public void GetCommand_PushCommandArgument_PassesTailOfArgumentArray()
+        {
+            bool wasInvoked = false;
+            var inputArguments = new[] { CommandFactory.PushArgument, "testing" };
+
+            Func<string[], PushCommand> factory = x =>
+            {
+                Assert.AreEqual(1, x.Length);
+                Assert.AreEqual("testing", x[0]);
+                wasInvoked = true;
+                return null;
+            };
+
+            var target = new CommandFactory(null, null, null, factory);
+            target.GetCommand(inputArguments);
+
+            Assert.IsTrue(wasInvoked);
+        }
     }
 }
