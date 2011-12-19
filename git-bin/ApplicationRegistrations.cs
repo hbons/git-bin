@@ -21,6 +21,7 @@ namespace GitBin
                 .AsSelf();
 
             builder.RegisterFactory<ShowUsageCommand>();
+            builder.RegisterFactory<VersionCommand>();
             builder.RegisterFactory<string[], CleanCommand>();
             builder.RegisterFactory<string[], SmudgeCommand>();
             builder.RegisterFactory<string[], PushCommand>();

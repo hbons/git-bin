@@ -1,5 +1,5 @@
 ﻿using System;
-using GitBin.Commands;
+using System.Linq;
 using Objector;
 
 namespace GitBin
@@ -8,36 +8,26 @@ namespace GitBin
     {
         static int Main(string[] args)
         {
-            var builder = new Builder();
-            ApplicationRegistrations.Register(builder);
-            var container = builder.Create();
-
             try
             {
+                var builder = new Builder();
+                ApplicationRegistrations.Register(builder);
+                var container = builder.Create();
+            
                 var commandFactory = container.Resolve<ICommandFactory>();
-                ICommand command;
 
-                try
-                {
-                    command = commandFactory.GetCommand(args);
-                }
-                catch (ArgumentException)
-                {
-                    commandFactory.GetShowUsageCommand().Execute();
-                    return 1;
-                }
-
+                var command = commandFactory.GetCommand(args);
                 command.Execute();
             }
             catch (ಠ_ಠ lod)
             {
                 GitBinConsole.WriteLine(lod.Message);
-                return 2;
+                return 1;
             }
             catch (Exception e)
             {
                 GitBinConsole.WriteLine("Uncaught exception, please report this bug! " + e);
-                return 3;
+                return 2;
             }
 
             return 0;
