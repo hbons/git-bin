@@ -41,7 +41,10 @@ namespace GitBin.Remotes
             putRequest.Key = filename;
                 //putRequest.WithSubscriber()
 
-            /*var putResponse =*/ client.PutObject(putRequest);
+            using (var putResponse = client.PutObject(putRequest))
+            {
+                
+            }
             // TODO - error checking, progress reporting, Dispose
         }
 
@@ -56,6 +59,20 @@ namespace GitBin.Remotes
             var getResponse = client.GetObject(getRequest);
             // TODO - error checking, progress reporting, Dispose
             return getResponse.ResponseStream;
+        }
+
+        public void DownloadFileTo(string fullPath, string filename)
+        {
+            var client = GetClient();
+
+            var getRequest = new GetObjectRequest();
+            getRequest.BucketName = _configurationProvider.S3Bucket;
+            getRequest.Key = filename;
+
+            using (var getResponse = client.GetObject(getRequest))
+            {
+                getResponse.WriteResponseStreamToFile(fullPath);
+            }
         }
 
         private AmazonS3 GetClient()

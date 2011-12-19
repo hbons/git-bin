@@ -9,6 +9,11 @@ namespace GitBin
             Console.Error.Write(message);
         }
 
+        public static void Write(string message, params object[] args)
+        {
+            Console.Error.Write(message, args);
+        }
+
         public static void WriteLine(string message, params object[] args)
         {
             Console.Error.WriteLine("[git-bin] " + message, args);

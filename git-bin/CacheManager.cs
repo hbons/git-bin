@@ -12,16 +12,15 @@ namespace GitBin
         void WriteFileToCache(string filename, Stream stream);
         string[] GetFilenamesNotInCache(IEnumerable<string> filenamesToCheck);
         string[] ListFiles();
+        string GetPathForFile(string filename);
     }
 
     public class CacheManager : ICacheManager
     {
-        private readonly IConfigurationProvider _configurationProvider;
         private readonly DirectoryInfo _cacheDirectoryInfo;
 
         public CacheManager(IConfigurationProvider configurationProvider)
         {
-            _configurationProvider = configurationProvider;
             _cacheDirectoryInfo = Directory.CreateDirectory(configurationProvider.CacheDirectory);
         }
 
@@ -53,8 +52,7 @@ namespace GitBin
 
             if (!File.Exists(path))
             {
-                var buffer = new byte[_configurationProvider.ChunkSize];
-                stream.Read(buffer, 0, buffer.Length);
+                var buffer = new byte[8192];
                 
                 var fileStream = new FileStream(path, FileMode.CreateNew, FileAccess.Write, FileShare.None, buffer.Length, FileOptions.WriteThrough);
 
@@ -65,6 +63,7 @@ namespace GitBin
                 }
 
                 fileStream.Close();
+                stream.Dispose();
             }
         }
 
@@ -84,7 +83,7 @@ namespace GitBin
             return filenamesNotInCache.ToArray();
         }
 
-        private string GetPathForFile(string filename)
+        public string GetPathForFile(string filename)
         {
             return Path.Combine(_cacheDirectoryInfo.FullName, filename);
         }
