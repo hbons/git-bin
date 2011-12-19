@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\PushCommand.cs" />
+    <Compile Include="Remotes\RemoteProgressPrinter.cs" />
     <Compile Include="Commands\VersionCommand.cs" />
     <Compile Include="GitBinConsole.cs" />
     <Compile Include="CacheManager.cs" />

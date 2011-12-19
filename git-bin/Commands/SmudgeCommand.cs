@@ -32,8 +32,6 @@ namespace GitBin.Commands
             DownloadMissingFiles(document.ChunkHashes);
 
             OutputReassembledChunks(document.ChunkHashes);
-
-            GitBinConsole.Write(" Done\n");
         }
 
         private void DownloadMissingFiles(IEnumerable<string> chunkHashes)
@@ -42,11 +40,15 @@ namespace GitBin.Commands
 
             if (filesToDownload.Length > 0)
             {
-                GitBinConsole.Write(" Downloading {0} chunks...", filesToDownload.Length);
+                GitBinConsole.WriteLineNoPrefix(" Downloading {0} chunks...", filesToDownload.Length);
 
-                foreach (var file in filesToDownload)
+                for (int i = 0; i < filesToDownload.Length; i++)
                 {
-                    _remote.DownloadFile(_cacheManager.GetPathForFile(file), file);
+                    using (new RemoteProgressPrinter(i, filesToDownload.Length, _remote))
+                    {
+                        var file = filesToDownload[i];
+                        _remote.DownloadFile(_cacheManager.GetPathForFile(file), file);
+                    }
                 }
             }
         }

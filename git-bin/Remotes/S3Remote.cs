@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using Amazon;
 using Amazon.S3;
@@ -8,6 +9,10 @@ namespace GitBin.Remotes
 {
     public class S3Remote : IRemote
     {
+        private const int RequestTimeoutInMinutes = 60;
+        private const string InvalidAccessKeyErrorCode = "InvalidAccessKeyId";
+        private const string InvalidSecurityErrorCode = "InvalidSecurity";
+
         private readonly IConfigurationProvider _configurationProvider;
         private AmazonS3 _client;
 
@@ -39,13 +44,18 @@ namespace GitBin.Remotes
             putRequest.BucketName = _configurationProvider.S3Bucket;
             putRequest.FilePath = fullPath;
             putRequest.Key = key;
-                //putRequest.WithSubscriber()
+            putRequest.Timeout = RequestTimeoutInMinutes*60000;
+            putRequest.PutObjectProgressEvent += (s, args) => ReportProgress(args);
 
-            using (var putResponse = client.PutObject(putRequest))
+            try
             {
-                
+                PutObjectResponse putResponse = client.PutObject(putRequest);
+                putResponse.Dispose();
             }
-            // TODO - error checking, progress reporting
+            catch(AmazonS3Exception e)
+            {
+                throw new ಠ_ಠ(GetMessageFromException(e));
+            }
         }
 
         public void DownloadFile(string fullPath, string key)
@@ -55,13 +65,23 @@ namespace GitBin.Remotes
             var getRequest = new GetObjectRequest();
             getRequest.BucketName = _configurationProvider.S3Bucket;
             getRequest.Key = key;
+            getRequest.Timeout = RequestTimeoutInMinutes*60000;
 
-            using (var getResponse = client.GetObject(getRequest))
+            try
             {
-                getResponse.WriteResponseStreamToFile(fullPath);
+                using (var getResponse = client.GetObject(getRequest))
+                {
+                    getResponse.WriteObjectProgressEvent += (s, args) => ReportProgress(args);
+                    getResponse.WriteResponseStreamToFile(fullPath);
+                }
             }
-            // TODO - error checking, progress reporting
+            catch(AmazonS3Exception e)
+            {
+                throw new ಠ_ಠ(GetMessageFromException(e));                
+            }
         }
+
+        public event Action<int> ProgressChanged;
 
         private AmazonS3 GetClient()
         {
@@ -73,6 +93,24 @@ namespace GitBin.Remotes
             }
 
             return _client;
+        }
+
+        private void ReportProgress(TransferProgressArgs args)
+        {
+            if (this.ProgressChanged != null)
+            {
+                this.ProgressChanged(args.PercentDone);
+            }
+        }
+
+        private string GetMessageFromException(AmazonS3Exception e)
+        {
+            if (!string.IsNullOrEmpty(e.ErrorCode) &&
+                (e.ErrorCode == InvalidAccessKeyErrorCode ||
+                 e.ErrorCode == InvalidSecurityErrorCode))
+                return "S3 error: check your access key and secret access key";
+
+            return string.Format("S3 error: code [{0}], message [{1}]", e.ErrorCode, e.Message);
         }
     }
 }
