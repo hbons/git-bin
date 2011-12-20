@@ -1,6 +1,8 @@
 # git-bin
 
-Why it's awesome.
+Dealing with large binary files in git can be difficult. git-bin's goal is to allow files to be managed with git, but to store the file contents in Amazon S3. git-bin follows the principle of least surprise, and functions just like built-in git commands.
+
+To make better use of time, bandwidth, and storage space, git-bin divides large files into smaller chunks (default size 1M). If there is a 1 byte change in the middle of a 100MB file, only one chunk will have to be uploaded and stored instead of the entire file.
 
 
 ## Configuration
@@ -8,7 +10,7 @@ Why it's awesome.
 Step 1: Add a new filter called 'bin'
 
 ```bash
-$ git config --global filter.bin.clean “git bin clean %f”
+$ git config --global filter.bin.clean "git bin clean %f"
 $ git config --global filter.bin.smudge "git bin smudge"
 ```
 
