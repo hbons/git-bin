@@ -12,7 +12,7 @@ namespace GitBin.Remotes
 
         public RemoteProgressPrinter(int chunkNumber, int totalChunks, IRemote remote)
         {
-            GitBinConsole.WriteNoPrefix("\t[{0}/{1}] -> ", chunkNumber, totalChunks);
+            GitBinConsole.WriteNoPrefix("  [{0}/{1}] -> ", chunkNumber, totalChunks);
 
             _remote = remote;
             _remote.ProgressChanged += OnProgressChanged;
