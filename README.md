@@ -68,7 +68,7 @@ $ git pull
 <snip>
 Updating dc53749..6adb9c6
 [git-bin] Smudging brooklyn_bridge.jpg... Downloading 1 chunks...
-        [0/1] -> 0..10..20..30..40..50..60..70..80..90..100
+  [0/1] -> 0..10..20..30..40..50..60..70..80..90..100
 Fast-forward
  brooklyn_bridge.jpg |  Bin 0 -> 222616 bytes
  1 files changed, 0 insertions(+), 0 deletions(-)
@@ -97,7 +97,7 @@ The chunk size defaults to 1M. If you want to change this for some reason you ca
 $ git config --global git-bin.chunkSize 10m
 ```
 
-git has a setting called `core.bigFileThreshold` that it uses to try to deal with large files. Any file that's larger than this setting **will not get passed to gin bin!** You can of course set it to a larger value:
+git has a setting called `core.bigFileThreshold` that it uses to try to deal with large files. Any file that's larger than this setting **will NOT get passed to git bin!** You can of course set it to a larger value:
 
 ```bash
 $ git config --global core.bigFileThreshold 2g
