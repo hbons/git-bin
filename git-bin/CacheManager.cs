@@ -13,6 +13,7 @@ namespace GitBin
         string[] GetFilenamesNotInCache(IEnumerable<string> filenamesToCheck);
         string[] ListFiles();
         string GetPathForFile(string filename);
+        long GetSizeOnDisk();
     }
 
     public class CacheManager : ICacheManager
@@ -86,6 +87,13 @@ namespace GitBin
         public string GetPathForFile(string filename)
         {
             return Path.Combine(_cacheDirectoryInfo.FullName, filename);
+        }
+
+        public long GetSizeOnDisk()
+        {
+            return _cacheDirectoryInfo
+                .GetFiles()
+                .Sum(fi => fi.Length);
         }
     }
 }

@@ -20,7 +20,7 @@ namespace GitBin.Commands
 
         public void Execute()
         {
-            var filesInRemote = _remote.ListFiles();
+            var filesInRemote = _remote.ListFiles().Select(rfi => rfi.Name);
             var filesInCache = _cacheManager.ListFiles();
 
             var filesToUpload = filesInCache.Except(filesInRemote).ToList();

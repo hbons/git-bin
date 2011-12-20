@@ -58,6 +58,7 @@
     <Compile Include="Commands\CleanCommandTest.cs" />
     <Compile Include="Commands\PushCommandTest.cs" />
     <Compile Include="Commands\SmudgeCommandTest.cs" />
+    <Compile Include="Commands\StatusCommandTest.cs" />
     <Compile Include="ConfigurationProviderTest.cs" />
     <Compile Include="GitBinDocumentTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -25,6 +25,7 @@ namespace GitBin
             builder.RegisterFactory<string[], CleanCommand>();
             builder.RegisterFactory<string[], SmudgeCommand>();
             builder.RegisterFactory<string[], PushCommand>();
+            builder.RegisterFactory<string[], StatusCommand>();
         }
     }
 }

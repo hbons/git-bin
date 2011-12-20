@@ -22,7 +22,7 @@ namespace GitBin.Remotes
             _configurationProvider = configurationProvider;
         }
 
-        public string[] ListFiles()
+        public RemoteFileInfo[] ListFiles()
         {
             var client = GetClient();
 
@@ -31,7 +31,7 @@ namespace GitBin.Remotes
 
             var listResponse = client.ListObjects(listRequest);
 
-            var keys = listResponse.S3Objects.Select(o => o.Key);
+            var keys = listResponse.S3Objects.Select(o => new RemoteFileInfo(o.Key, o.Size));
 
             return keys.ToArray();
         }
