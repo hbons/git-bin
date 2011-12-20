@@ -37,7 +37,7 @@ etc, etc, etc
 
 Once the three configuration steps have been completed, normal use of git will invoke git-bin for files that match a pattern in .gitattributes.
 
-Adding a new file (the JPG is 217k, but only 409b were sent to git):
+Adding a new file (note that the JPG is 217k, but only 409b were sent to git):
 
 ```bash
 $ ls -lh brooklyn_bridge.jpg
@@ -48,34 +48,22 @@ $ git add brooklyn_bridge.jpg
 
 $ git commit -m "Added JPG that's manage by git-bin"
 [dev 6adb9c6] Added JPG that's manage by git-bin
- 1 files changed, 0 insertions(+), 0 deletions(-)
- create mode 100644 brooklyn_bridge.jpg
+<snip>
  
 $ git bin push
 [git-bin] Uploading 1 chunks...
   [0/1] -> 0..10..20..30..40..50..60..70..80..90..100
 
 $ git push
-Counting objects: 4, done.
-Delta compression using up to 2 threads.
-Compressing objects: 100% (3/3), done.
+<snip>
 Writing objects: 100% (3/3), 409 bytes, done.
-Total 3 (delta 1), reused 0 (delta 0)
-To git@github.com:xxxx/MyRepo.git
-   dc53749..6adb9c6  master -> master
-[git-bin] Cleaning brooklyn_bridge.jpg
 ```
 
 When you or someone else on the team checks out a file it will either be pulled from the on-disk cache or downloaded if it's not in the cache:
 
 ```bash
 $ git pull
-remote: Counting objects: 4, done.
-remote: Compressing objects: 100% (2/2), done.
-remote: Total 3 (delta 1), reused 3 (delta 1)
-Unpacking objects: 100% (3/3), done.
-From github.com:xxxx/MyRepo
-   dc53749..6adb9c6  master     -> origin/master
+<snip>
 Updating dc53749..6adb9c6
 [git-bin] Smudging brooklyn_bridge.jpg... Downloading 1 chunks...
         [0/1] -> 0..10..20..30..40..50..60..70..80..90..100
@@ -86,15 +74,29 @@ Fast-forward
 ```
 
 
-## Optional configuration
-
-
 ## How it works
 
+When a file is passed to the clean filter it is divided into chunks (see Optional Configuration section below to find out how to change the chunk size). The chunks are saved into a cache directory located at `<repo root>/.git/git-bin`. The output of the clean filter, and hence that data that git sees, is a YAML document. Here's what that JPG turned into:
+
+```
+Filename: brooklyn_bridge.jpg
+ChunkHashes:
+- 523A59D8C7460C9E43637A77FCA05989153E279E2E2F6A6FFF417671FFE93073
+```
+
+When a file is checked out the YAML gets passed to the smudge filter. The smudge filter looks for each chunk in the cache directory and downloads it if it's missing. The output of the smudge filter, and hence that data that gets written to the working directory, is the reassembled contents of the chunks.
 
 
-[Optional]
-chunkSize
-maxCacheSize
+## Optional configuration
 
-core.largefilethreshold
+The chunk size defaults to 1M. If you want to change this for some reason you can set it like any other value in your git config:
+
+```bash
+$ git config --global git-bin.chunkSize 10m
+```
+
+git has a setting called `core.bigFileThreshold` that it uses to try to deal with large files. Any file that's larger than this setting **will not get passed to gin bin!** You can of course set it to a larger value:
+
+```bash
+$ git config --global core.bigFileThreshold 2g
+```
