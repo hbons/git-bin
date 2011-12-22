@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using GitBin.Remotes;
 
@@ -14,6 +15,9 @@ namespace GitBin.Commands
             IRemote remote,
             string[] args)
         {
+            if (args.Length > 0)
+                throw new ArgumentException();
+
             _cacheManager = cacheManager;
             _remote = remote;
         }
@@ -25,7 +29,7 @@ namespace GitBin.Commands
 
             var filesToUpload = filesInCache.Except(filesInRemote).ToList();
 
-            GitBinConsole.WriteLine("Uploading {0} chunks...", filesToUpload.Count);
+            GitBinConsole.WriteLine("Uploading {0} chunks", filesToUpload.Count);
 
             for (int i = 0; i < filesToUpload.Count; i++)
             {

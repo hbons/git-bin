@@ -86,7 +86,7 @@ ChunkHashes:
 - 523A59D8C7460C9E43637A77FCA05989153E279E2E2F6A6FFF417671FFE93073
 ```
 
-When a file is checked out the YAML gets passed to the smudge filter. The smudge filter looks for each chunk in the cache directory and downloads it if it's missing. The output of the smudge filter, and hence that data that gets written to the working directory, is the reassembled contents of the chunks.
+When a file is checked out the YAML gets passed to the smudge filter. The smudge filter looks for each chunk in the cache directory and downloads it if it's missing. The output of the smudge filter, and hence the data that gets written to the working directory, is the reassembled contents of the chunks.
 
 
 ## Optional configuration
@@ -97,7 +97,7 @@ The chunk size defaults to 1M. If you want to change this for some reason you ca
 $ git config --global git-bin.chunkSize 10m
 ```
 
-git has a setting called `core.bigFileThreshold` that it uses to try to deal with large files. Any file that's larger than this setting **will NOT get passed to git bin!** You can of course set it to a larger value:
+git has a setting called `core.bigFileThreshold` that it uses to try to deal with large files. The default value is 512M. Any file that's larger than this setting **will NOT get passed to git-bin!** You can of course set it to a larger value:
 
 ```bash
 $ git config --global core.bigFileThreshold 2g
