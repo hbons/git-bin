@@ -1,11 +1,11 @@
-﻿namespace GitBin.Remotes
+﻿namespace GitBin
 {
-    public class RemoteFileInfo
+    public class GitBinFileInfo
     {
         public string Name { get; private set; }
         public long Size { get; private set; }
 
-        public RemoteFileInfo(string name, long size)
+        public GitBinFileInfo(string name, long size)
         {
             this.Name = name;
             this.Size = size;

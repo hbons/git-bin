@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using GitBin.Remotes;
 
@@ -12,6 +13,7 @@ namespace GitBin.Commands
         private readonly ICacheManager _cacheManager;
         private readonly IRemote _remote;
         private readonly bool _shouldShowRemote;
+        private GitBinFileInfo[] _filesInLocalCache;
 
         public StatusCommand(
             ICacheManager cacheManager,
@@ -35,6 +37,8 @@ namespace GitBin.Commands
 
             _cacheManager = cacheManager;
             _remote = remote;
+
+            _filesInLocalCache = _cacheManager.ListFiles();
         }
 
         public void Execute()
@@ -49,19 +53,28 @@ namespace GitBin.Commands
 
         private void PrintStatusAboutCache()
         {
+            var sizeOfCache = _filesInLocalCache.Sum(fi => fi.Size);
+
             GitBinConsole.WriteLineNoPrefix("Local cache:");
-            GitBinConsole.WriteLineNoPrefix("  items: {0}", _cacheManager.ListFiles().Length);
-            GitBinConsole.WriteLineNoPrefix("  size:  {0}", GetHumanReadableSize(_cacheManager.GetSizeOnDisk()));
+            GitBinConsole.WriteLineNoPrefix("  items: {0}", _filesInLocalCache.Length);
+            GitBinConsole.WriteLineNoPrefix("  size:  {0}", GetHumanReadableSize(sizeOfCache));
         }
 
         private void PrintStatusAboutRemote()
         {
             var remoteFiles = _remote.ListFiles();
-            var sizeOfRemote = remoteFiles.Sum(rfi => rfi.Size);
-
+            var sizeOfRemote = remoteFiles.Sum(fi => fi.Size);
+            
             GitBinConsole.WriteLineNoPrefix("Remote repo:");
             GitBinConsole.WriteLineNoPrefix("  items: {0}", remoteFiles.Length);
             GitBinConsole.WriteLineNoPrefix("  size:  {0}", GetHumanReadableSize(sizeOfRemote));
+
+            var filesToPush = _filesInLocalCache.Except(remoteFiles).ToList();
+            var sizeOfFilesToPush = filesToPush.Sum(fi => fi.Size);
+
+            GitBinConsole.WriteLineNoPrefix("To push:");
+            GitBinConsole.WriteLineNoPrefix("  items: {0}", filesToPush.Count);
+            GitBinConsole.WriteLineNoPrefix("  size:  {0}", GetHumanReadableSize(sizeOfFilesToPush));
         }
 
         public static string GetHumanReadableSize(long numberOfBytes)

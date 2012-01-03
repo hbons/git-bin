@@ -24,7 +24,7 @@ namespace GitBin.Commands
 
         public void Execute()
         {
-            var filesInRemote = _remote.ListFiles().Select(rfi => rfi.Name);
+            var filesInRemote = _remote.ListFiles();
             var filesInCache = _cacheManager.ListFiles();
 
             var filesToUpload = filesInCache.Except(filesInRemote).ToList();
@@ -36,7 +36,7 @@ namespace GitBin.Commands
                 using (new RemoteProgressPrinter(i, filesToUpload.Count, _remote))
                 {
                     var file = filesToUpload[i];
-                    _remote.UploadFile(_cacheManager.GetPathForFile(file), file);
+                    _remote.UploadFile(_cacheManager.GetPathForFile(file.Name), file.Name);
                 }
             }
         }

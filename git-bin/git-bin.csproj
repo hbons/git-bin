@@ -59,7 +59,7 @@
   <ItemGroup>
     <Compile Include="Commands\PushCommand.cs" />
     <Compile Include="Commands\StatusCommand.cs" />
-    <Compile Include="Remotes\RemoteFileInfo.cs" />
+    <Compile Include="GitBinFileInfo.cs" />
     <Compile Include="Remotes\RemoteProgressPrinter.cs" />
     <Compile Include="Commands\VersionCommand.cs" />
     <Compile Include="GitBinConsole.cs" />

@@ -11,9 +11,8 @@ namespace GitBin
         void WriteFileToCache(string filename, byte[] contents, int contentLength);
         void WriteFileToCache(string filename, Stream stream);
         string[] GetFilenamesNotInCache(IEnumerable<string> filenamesToCheck);
-        string[] ListFiles();
+        GitBinFileInfo[] ListFiles();
         string GetPathForFile(string filename);
-        long GetSizeOnDisk();
     }
 
     public class CacheManager : ICacheManager
@@ -68,17 +67,17 @@ namespace GitBin
             }
         }
 
-        public string[] ListFiles()
+        public GitBinFileInfo[] ListFiles()
         {
             var allFiles = _cacheDirectoryInfo.GetFiles();
-            var filenamesInCache = allFiles.Select(fi => fi.Name);
+            var gitBinFileInfos = allFiles.Select(fi => new GitBinFileInfo(fi.Name, fi.Length));
 
-            return filenamesInCache.ToArray();
+            return gitBinFileInfos.ToArray();
         }
 
         public string[] GetFilenamesNotInCache(IEnumerable<string> filenamesToCheck)
         {
-            var filenamesInCache = ListFiles();
+            var filenamesInCache = ListFiles().Select(fi => fi.Name);
             var filenamesNotInCache = filenamesToCheck.Except(filenamesInCache);
 
             return filenamesNotInCache.ToArray();
@@ -87,13 +86,6 @@ namespace GitBin
         public string GetPathForFile(string filename)
         {
             return Path.Combine(_cacheDirectoryInfo.FullName, filename);
-        }
-
-        public long GetSizeOnDisk()
-        {
-            return _cacheDirectoryInfo
-                .GetFiles()
-                .Sum(fi => fi.Length);
         }
     }
 }

@@ -5,7 +5,7 @@ namespace GitBin.Remotes
 {
     public interface IRemote
     {
-        RemoteFileInfo[] ListFiles();
+        GitBinFileInfo[] ListFiles();
 
         void UploadFile(string fullPath, string key);
         void DownloadFile(string fullPath, string key);

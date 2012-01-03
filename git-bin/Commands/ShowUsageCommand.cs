@@ -16,8 +16,6 @@ namespace GitBin.Commands
             GitBinConsole.WriteLineNoPrefix("  push     Upload changed files to the remote file repository");
             GitBinConsole.WriteLineNoPrefix("  smudge   Smudge filter. Should only be used with .gitattributes filtering");
             GitBinConsole.WriteLineNoPrefix("  status   Display status of the local cache. [-r], include the remote repo");
-//            GitBinConsole.WriteNoPrefix(Environment.NewLine);
-//            GitBinConsole.WriteLineNoPrefix("Run 'git bin help <command>' for more information on a specific command.");
         }
     }
 }
