@@ -5,6 +5,11 @@ Dealing with large binary files in git can be difficult. git-bin's goal is to al
 To make better use of time, bandwidth, and storage space, git-bin divides large files into smaller chunks (default size 1M). If there is a 1 byte change in the middle of a 100MB file, only one chunk will have to be uploaded and stored instead of the entire file.
 
 
+## Installation
+
+Extract the contents of git-bin-*.zip into a directory that is in your PATH. 
+
+
 ## Configuration
 
 Step 1: Add a new filter called 'bin'
