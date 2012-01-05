@@ -8,12 +8,11 @@ namespace GitBin.Commands
     public class StatusCommand : ICommand
     {
         public const string ShowRemoteArgument = "-r";
-        private static string[] Suffixes = new[] {"B", "k", "M", "G", "T", "P", "E"};
 
         private readonly ICacheManager _cacheManager;
         private readonly IRemote _remote;
         private readonly bool _shouldShowRemote;
-        private GitBinFileInfo[] _filesInLocalCache;
+        private readonly GitBinFileInfo[] _filesInLocalCache;
 
         public StatusCommand(
             ICacheManager cacheManager,
@@ -31,7 +30,7 @@ namespace GitBin.Commands
                 }
                 else
                 {
-                    throw new ArgumentException();
+                    throw new ArgumentException("status command only has one valid option: " + ShowRemoteArgument);
                 }
             }
 
@@ -53,51 +52,24 @@ namespace GitBin.Commands
 
         private void PrintStatusAboutCache()
         {
-            var sizeOfCache = _filesInLocalCache.Sum(fi => fi.Size);
-
             GitBinConsole.WriteLineNoPrefix("Local cache:");
             GitBinConsole.WriteLineNoPrefix("  items: {0}", _filesInLocalCache.Length);
-            GitBinConsole.WriteLineNoPrefix("  size:  {0}", GetHumanReadableSize(sizeOfCache));
+            GitBinConsole.WriteLineNoPrefix("  size:  {0}", GitBinFileInfoUtils.GetHumanReadableSize(_filesInLocalCache));
         }
 
         private void PrintStatusAboutRemote()
         {
             var remoteFiles = _remote.ListFiles();
-            var sizeOfRemote = remoteFiles.Sum(fi => fi.Size);
             
-            GitBinConsole.WriteLineNoPrefix("Remote repo:");
+            GitBinConsole.WriteLineNoPrefix("\nRemote repo:");
             GitBinConsole.WriteLineNoPrefix("  items: {0}", remoteFiles.Length);
-            GitBinConsole.WriteLineNoPrefix("  size:  {0}", GetHumanReadableSize(sizeOfRemote));
+            GitBinConsole.WriteLineNoPrefix("  size:  {0}", GitBinFileInfoUtils.GetHumanReadableSize(remoteFiles));
 
             var filesToPush = _filesInLocalCache.Except(remoteFiles).ToList();
-            var sizeOfFilesToPush = filesToPush.Sum(fi => fi.Size);
 
-            GitBinConsole.WriteLineNoPrefix("To push:");
+            GitBinConsole.WriteLineNoPrefix("\nTo push:");
             GitBinConsole.WriteLineNoPrefix("  items: {0}", filesToPush.Count);
-            GitBinConsole.WriteLineNoPrefix("  size:  {0}", GetHumanReadableSize(sizeOfFilesToPush));
-        }
-
-        public static string GetHumanReadableSize(long numberOfBytes)
-        {
-            int suffixIndex = 0;
-            int increment = 1024;
-            double scaledNumberOfBytes = numberOfBytes;
-
-            if (numberOfBytes > 0)
-            {
-                while (scaledNumberOfBytes >= increment)
-                {
-                    suffixIndex++;
-                    scaledNumberOfBytes /= increment;
-                }
-
-                if (Math.Abs(scaledNumberOfBytes - 0) < 0.1)
-                {
-                    scaledNumberOfBytes = 1;
-                }
-            }
-
-            return string.Format("{0}{1}", scaledNumberOfBytes.ToString("0.#"), Suffixes[suffixIndex]);
+            GitBinConsole.WriteLineNoPrefix("  size:  {0}", GitBinFileInfoUtils.GetHumanReadableSize(filesToPush));
         }
     }
 }

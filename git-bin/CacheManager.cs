@@ -10,8 +10,9 @@ namespace GitBin
         byte[] ReadFileFromCache(string filename);
         void WriteFileToCache(string filename, byte[] contents, int contentLength);
         void WriteFileToCache(string filename, Stream stream);
-        string[] GetFilenamesNotInCache(IEnumerable<string> filenamesToCheck);
         GitBinFileInfo[] ListFiles();
+        void ClearCache();
+        string[] GetFilenamesNotInCache(IEnumerable<string> filenamesToCheck);
         string GetPathForFile(string filename);
     }
 
@@ -73,6 +74,14 @@ namespace GitBin
             var gitBinFileInfos = allFiles.Select(fi => new GitBinFileInfo(fi.Name, fi.Length));
 
             return gitBinFileInfos.ToArray();
+        }
+
+        public void ClearCache()
+        {
+            foreach (var file in ListFiles())
+            {
+                File.Delete(GetPathForFile(file.Name));
+            }
         }
 
         public string[] GetFilenamesNotInCache(IEnumerable<string> filenamesToCheck)

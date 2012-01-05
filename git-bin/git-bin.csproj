@@ -57,9 +57,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\ClearCommand.cs" />
+    <Compile Include="Commands\PrintCommand.cs" />
     <Compile Include="Commands\PushCommand.cs" />
     <Compile Include="Commands\StatusCommand.cs" />
     <Compile Include="GitBinFileInfo.cs" />
+    <Compile Include="GitBinFileInfoUtils.cs" />
     <Compile Include="Remotes\RemoteProgressPrinter.cs" />
     <Compile Include="Commands\VersionCommand.cs" />
     <Compile Include="GitBinConsole.cs" />

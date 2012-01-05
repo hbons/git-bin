@@ -22,7 +22,9 @@ namespace GitBin
 
             builder.RegisterFactory<ShowUsageCommand>();
             builder.RegisterFactory<VersionCommand>();
+            builder.RegisterFactory<string, PrintCommand>();
             builder.RegisterFactory<string[], CleanCommand>();
+            builder.RegisterFactory<string[], ClearCommand>();
             builder.RegisterFactory<string[], SmudgeCommand>();
             builder.RegisterFactory<string[], PushCommand>();
             builder.RegisterFactory<string[], StatusCommand>();
