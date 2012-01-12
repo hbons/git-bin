@@ -51,6 +51,10 @@ namespace GitBin.Commands
                     }
                 }
             }
+            else
+            {
+                GitBinConsole.WriteNoPrefix(Environment.NewLine);                
+            }
         }
 
         private void OutputReassembledChunks(IEnumerable<string> chunkHashes)
