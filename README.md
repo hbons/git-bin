@@ -107,3 +107,8 @@ git has a setting called `core.bigFileThreshold` that it uses to try to deal wit
 ```bash
 $ git config --global core.bigFileThreshold 2g
 ```
+
+
+## Notes
+
+git-bin does not play well with empty files. If you're stuck in a state where git is cleaning a file every time a command is run, the file being empty is likely the culprit. If anyone knows the correct way to deal with empty files and git smudge/clean filters, please let me know!
