@@ -38,22 +38,29 @@ namespace GitBin.Commands
         {
             var filesToDownload = _cacheManager.GetFilenamesNotInCache(chunkHashes);
 
-            if (filesToDownload.Length > 0)
+            if (filesToDownload.Length == 0)
             {
-                GitBinConsole.WriteLineNoPrefix(" Downloading {0} chunks...", filesToDownload.Length);
+                GitBinConsole.WriteLineNoPrefix(" All chunks already present in cache\n");
+            }
+            else
+            {
+                if (filesToDownload.Length == 1)
+                {
+                    GitBinConsole.WriteLineNoPrefix(" Downloading 1 chunk...");
+                }
+                else
+                {
+                    GitBinConsole.WriteLineNoPrefix(" Downloading {0} chunks...", filesToDownload.Length);
+                }
 
                 for (int i = 0; i < filesToDownload.Length; i++)
                 {
-                    using (new RemoteProgressPrinter(i, filesToDownload.Length, _remote))
+                    using (new RemoteProgressPrinter(i + 1, filesToDownload.Length, _remote))
                     {
                         var file = filesToDownload[i];
                         _remote.DownloadFile(_cacheManager.GetPathForFile(file), file);
                     }
                 }
-            }
-            else
-            {
-                GitBinConsole.WriteNoPrefix(Environment.NewLine);                
             }
         }
 

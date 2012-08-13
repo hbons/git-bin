@@ -29,14 +29,28 @@ namespace GitBin.Commands
 
             var filesToUpload = filesInCache.Except(filesInRemote).ToList();
 
-            GitBinConsole.WriteLine("Uploading {0} chunks", filesToUpload.Count);
-
-            for (int i = 0; i < filesToUpload.Count; i++)
+            if (filesToUpload.Count == 0)
             {
-                using (new RemoteProgressPrinter(i, filesToUpload.Count, _remote))
+                GitBinConsole.WriteLine("All chunks already present on remote");
+            }
+            else
+            {
+                if (filesToUpload.Count == 1)
                 {
-                    var file = filesToUpload[i];
-                    _remote.UploadFile(_cacheManager.GetPathForFile(file.Name), file.Name);
+                    GitBinConsole.WriteLine("Uploading 1 chunk");
+                }
+                else
+                {
+                    GitBinConsole.WriteLine("Uploading {0} chunks", filesToUpload.Count);
+                }
+
+                for (int i = 0; i < filesToUpload.Count; i++)
+                {
+                    using (new RemoteProgressPrinter(i + 1, filesToUpload.Count, _remote))
+                    {
+                        var file = filesToUpload[i];
+                        _remote.UploadFile(_cacheManager.GetPathForFile(file.Name), file.Name);
+                    }
                 }
             }
         }

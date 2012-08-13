@@ -1,0 +1,2 @@
+#!/bin/bash
+mono git-bin.exe $@
