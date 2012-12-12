@@ -28,22 +28,21 @@ namespace GitBin.Remotes
             var remoteFiles = new List<GitBinFileInfo>();
             var client = GetClient();
 
-            ListObjectsResponse listResponse;
-
             var listRequest = new ListObjectsRequest();
             listRequest.BucketName = _configurationProvider.S3Bucket;
 
-            do
-            {
-                listResponse = client.ListObjects(listRequest);
+            ListObjectsResponse listResponse;
 
+            do {
+                listResponse = client.ListObjects(listRequest);
                 var keys = listResponse.S3Objects.Select(o => new GitBinFileInfo(o.Key, o.Size));
 
+                if (remoteFiles.Count > 0)
+                    listRequest.Marker = remoteFiles[remoteFiles.Count -1].Name;
+
                 remoteFiles.AddRange(keys);
-
-                listRequest.Marker = remoteFiles[remoteFiles.Count -1].Name;
-
-            } while (listResponse.IsTruncated);
+            }
+            while (listResponse.IsTruncated);
 
             return remoteFiles.ToArray();
         }
