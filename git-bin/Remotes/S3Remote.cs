@@ -35,12 +35,15 @@ namespace GitBin.Remotes
 
             do {
                 listResponse = client.ListObjects(listRequest);
-                var keys = listResponse.S3Objects.Select(o => new GitBinFileInfo(o.Key, o.Size));
 
-                if (remoteFiles.Count > 0)
-                    listRequest.Marker = remoteFiles[remoteFiles.Count -1].Name;
+                if (listResponse.S3Objects.Any())
+                {
+                    var keys = listResponse.S3Objects.Select(o => new GitBinFileInfo(o.Key, o.Size));
 
-                remoteFiles.AddRange(keys);
+                    remoteFiles.AddRange(keys);
+
+                    listRequest.Marker = remoteFiles[remoteFiles.Count - 1].Name;
+                }
             }
             while (listResponse.IsTruncated);
 
