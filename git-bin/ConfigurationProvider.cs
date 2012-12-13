@@ -20,17 +20,31 @@ namespace GitBin
 
         public const string DirectoryName = "git-bin";
         public const string SectionName = "git-bin";
-        public const string ChunkSizeName = "chunkSize";
-        public const string MaximumCacheSizeName = "maxCacheSize";
 
-
-        public long ChunkSize { get; private set; }
-        public long MaximumCacheSize { get; private set; }
         public string CacheDirectory { get; private set; }
+        
 
         private readonly IGitExecutor _gitExecutor;
         private Hashtable _settings;
 
+
+        public long ChunkSize {
+            get {
+                if (Settings.ContainsKey("chunksize"))
+                    return long.Parse((string) Settings["chunksize"]);
+                else
+                    return DefaultChunkSize;
+            }
+        }
+
+        public long MaximumCacheSize {
+            get {
+                if (Settings.ContainsKey("maxcachesize"))
+                    return long.Parse((string) Settings["maxcachesize"]);
+                else
+                    return DefaultMaximumCacheSize;
+            }
+        }
 
         public Hashtable Settings {
             get {
@@ -51,37 +65,10 @@ namespace GitBin
             }
         }
 
-
         public ConfigurationProvider(IGitExecutor gitExecutor)
         {
             _gitExecutor = gitExecutor;
-
-            this.ChunkSize = GetLongValue(ChunkSizeName, DefaultChunkSize);
-            this.MaximumCacheSize = GetLongValue(MaximumCacheSizeName, DefaultMaximumCacheSize);
             this.CacheDirectory = GetCacheDirectory();
-        }
-
-        private long GetLongValue(string name, long defaultValue)
-        {
-            var rawValue = _gitExecutor.GetLong("config --int " + SectionName + '.' + name);
-
-            if (!rawValue.HasValue)
-                return defaultValue;
-
-            if (rawValue < 0)
-                throw new ಠ_ಠ(name + " cannot be negative");
-
-            return rawValue.Value;
-        }
-
-        private string GetStringValue(string name)
-        {
-            var rawValue = _gitExecutor.GetString("config " + SectionName + '.' + name);
-
-            if (string.IsNullOrEmpty(rawValue))
-                throw new ಠ_ಠ(name + " must be set");
-
-            return rawValue;
         }
 
         private string GetCacheDirectory()
