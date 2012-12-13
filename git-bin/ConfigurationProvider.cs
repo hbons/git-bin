@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.Collections;
+using System.Text.RegularExpressions;
 
 namespace GitBin
 {
@@ -7,10 +9,8 @@ namespace GitBin
     {
         long ChunkSize { get; }
         long MaximumCacheSize { get; }
-        string S3Key { get; }
-        string S3SecretKey { get; }
-        string S3Bucket { get; }
         string CacheDirectory { get; }
+        Hashtable Settings { get; }
     }
 
     public class ConfigurationProvider : IConfigurationProvider
@@ -22,18 +22,35 @@ namespace GitBin
         public const string SectionName = "git-bin";
         public const string ChunkSizeName = "chunkSize";
         public const string MaximumCacheSizeName = "maxCacheSize";
-        public const string S3KeyName = "s3key";
-        public const string S3SecretKeyName = "s3secretKey";
-        public const string S3BucketName = "s3bucket";
 
-        private readonly IGitExecutor _gitExecutor;
 
         public long ChunkSize { get; private set; }
         public long MaximumCacheSize { get; private set; }
-        public string S3Key { get; private set; }
-        public string S3SecretKey { get; private set; }
-        public string S3Bucket { get; private set; }
         public string CacheDirectory { get; private set; }
+
+        private readonly IGitExecutor _gitExecutor;
+        private Hashtable _settings;
+
+
+        public Hashtable Settings {
+            get {
+                if (_settings == null) {
+                    _settings    = new Hashtable();
+                    var rawValue = _gitExecutor.GetString("config --get-regexp " + SectionName + ".*");
+                    Regex regex  = new Regex(SectionName + "\\.(.+) (.+)");
+                    
+                    foreach (Match match in regex.Matches (rawValue)) {
+                        string key = match.Groups[1].ToString();
+                        string val = match.Groups[2].ToString();
+
+                        _settings.Add(key, val);
+                    }
+                }
+                
+                return _settings;
+            }
+        }
+
 
         public ConfigurationProvider(IGitExecutor gitExecutor)
         {
@@ -41,9 +58,6 @@ namespace GitBin
 
             this.ChunkSize = GetLongValue(ChunkSizeName, DefaultChunkSize);
             this.MaximumCacheSize = GetLongValue(MaximumCacheSizeName, DefaultMaximumCacheSize);
-            this.S3Key = GetStringValue(S3KeyName);
-            this.S3SecretKey = GetStringValue(S3SecretKeyName);
-            this.S3Bucket = GetStringValue(S3BucketName);
             this.CacheDirectory = GetCacheDirectory();
         }
 

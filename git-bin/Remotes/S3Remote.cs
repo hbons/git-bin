@@ -29,7 +29,7 @@ namespace GitBin.Remotes
             var client = GetClient();
 
             var listRequest = new ListObjectsRequest();
-            listRequest.BucketName = _configurationProvider.S3Bucket;
+            listRequest.BucketName = (string) _configurationProvider.Settings["s3bucket"];
 
             ListObjectsResponse listResponse;
 
@@ -55,7 +55,7 @@ namespace GitBin.Remotes
             var client = GetClient();
 
             var putRequest = new PutObjectRequest();
-            putRequest.BucketName = _configurationProvider.S3Bucket;
+            putRequest.BucketName = (string) _configurationProvider.Settings["s3bucket"];
             putRequest.FilePath = fullPath;
             putRequest.Key = key;
             putRequest.Timeout = RequestTimeoutInMinutes*60000;
@@ -77,7 +77,7 @@ namespace GitBin.Remotes
             var client = GetClient();
 
             var getRequest = new GetObjectRequest();
-            getRequest.BucketName = _configurationProvider.S3Bucket;
+            getRequest.BucketName = (string) _configurationProvider.Settings["s3bucket"];
             getRequest.Key = key;
             getRequest.Timeout = RequestTimeoutInMinutes*60000;
 
@@ -102,8 +102,8 @@ namespace GitBin.Remotes
             if (_client == null)
             {
                 _client = AWSClientFactory.CreateAmazonS3Client(
-                    _configurationProvider.S3Key,
-                    _configurationProvider.S3SecretKey);
+                    (string) _configurationProvider.Settings["s3key"],
+                    (string) _configurationProvider.Settings["s3secretkey"]);
             }
 
             return _client;
