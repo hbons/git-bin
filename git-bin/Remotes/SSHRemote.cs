@@ -31,6 +31,9 @@ namespace GitBin.Remotes {
             string host = ssh_url.Host;
             int port    = ssh_url.Port;
 
+            if (string.IsNullOrEmpty (user))
+                user = "storage";
+
             if (port < 0)
                 port = 22;
 
