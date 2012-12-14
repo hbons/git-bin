@@ -34,7 +34,12 @@ namespace GitBin.Remotes {
             if (port < 0)
                 port = 22;
 
-            this.client = new SftpClient (host, port, user, new PrivateKeyFile (ssh_private_key_file));
+            string passphrase = "";
+
+            if (this.configurationProvider.Settings.ContainsKey ("sshprivatekeypassphrase"))
+                passphrase = (string) this.configurationProvider.Settings ["sshprivatekeypassphrase"];
+
+            this.client = new SftpClient (host, port, user, new PrivateKeyFile (ssh_private_key_file, passphrase));
             this.client.Connect ();
        }
         
