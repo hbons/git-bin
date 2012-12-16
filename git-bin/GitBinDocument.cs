@@ -37,7 +37,7 @@ namespace GitBin
             return sb.ToString();
         }
 
-        public static GitBinDocument FromYaml(TextReader textReader )
+        public static GitBinDocument FromYaml(TextReader textReader)
         {
             var yaml = textReader.ReadToEnd();
             

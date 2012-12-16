@@ -74,9 +74,14 @@ namespace GitBin.Remotes {
 
                 ProgressChanged (0);
 
+                string target_remote_path = this.remote_path + "/" + key;
+                string tmp_remote_path    = target_remote_path + ".tmp";
+
                 FileStream stream = new FileStream (full_path, FileMode.Open);
-                this.client.UploadFile (stream, this.remote_path + "/" + key);
+                this.client.UploadFile (stream, tmp_remote_path);
                 stream.Close ();
+
+                this.client.RenameFile (tmp_remote_path, target_remote_path);
 
                 ProgressChanged (100);
 
@@ -95,9 +100,13 @@ namespace GitBin.Remotes {
 
                 ProgressChanged (0);
 
-                FileStream stream = new FileStream (full_path, FileMode.Create);
+                string tmp_path = full_path + ".tmp";
+
+                FileStream stream = new FileStream (tmp_path, FileMode.Create);
                 this.client.DownloadFile (this.remote_path + "/" + key, stream);
                 stream.Close ();
+
+                File.Move (tmp_path, full_path);
 
                 ProgressChanged (100);
             
