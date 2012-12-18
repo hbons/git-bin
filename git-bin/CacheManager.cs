@@ -39,33 +39,43 @@ namespace GitBin
         {
             var path = GetPathForFile(filename);
 
-            if (!File.Exists(path))
+            if (File.Exists(path))
             {
-                var filestream = File.Create(path, contentLength, FileOptions.WriteThrough);
-                filestream.Write(contents, 0, contentLength);
-                filestream.Close();
+                if (new FileInfo(path).Length == contents.Length)
+                    return;
+                else
+                    File.Delete(path);
             }
+
+            var filestream = File.Create(path, contentLength, FileOptions.WriteThrough);
+            filestream.Write(contents, 0, contentLength);
+            filestream.Close();
         }
 
         public void WriteFileToCache(string filename, Stream stream)
         {
             var path = GetPathForFile(filename);
 
-            if (!File.Exists(path))
+            if (File.Exists(path))
             {
-                var buffer = new byte[8192];
-                
-                var fileStream = new FileStream(path, FileMode.CreateNew, FileAccess.Write, FileShare.None, buffer.Length, FileOptions.WriteThrough);
-
-                int bytesRead;
-                while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) > 0)
-                {
-                    fileStream.Write(buffer, 0, bytesRead);
-                }
-
-                fileStream.Close();
-                stream.Dispose();
+                if (new FileInfo(path).Length == stream.Length)
+                    return;
+                else
+                    File.Delete(path);
             }
+
+            var buffer = new byte[8192];
+            
+            var fileStream = new FileStream(path, FileMode.CreateNew, FileAccess.Write, FileShare.None, buffer.Length, FileOptions.WriteThrough);
+
+            int bytesRead;
+            while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) > 0)
+            {
+                fileStream.Write(buffer, 0, bytesRead);
+            }
+
+            fileStream.Close();
+            stream.Dispose();
         }
 
         public GitBinFileInfo[] ListFiles()
