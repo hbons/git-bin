@@ -29,12 +29,12 @@ $ git config --global git-bin.s3key "your key"
 $ git config --global git-bin.s3secretKey "your secret key"
 ```
 
-For the SSH/SFTP backend: 
+For the SFTP backend: 
 
 ```bash
-$ git config --global git-bin.sshUrl "your ssh url to an sftp folder"
-$ git config --global git-bin.sshPrivateKeyFilePath "your private key"
-$ git config --global git-bin.sshPrivateKeyPassphrase "your passphrase to unlock the private key"
+$ git config --global git-bin.sftpUrl "your ssh url to an sftp folder"
+$ git config --global git-bin.sftpPrivateKeyFilePath "your private key"
+$ git config --global git-bin.sftpPrivateKeyPassphrase "your passphrase to unlock the private key"
 ```
 
 

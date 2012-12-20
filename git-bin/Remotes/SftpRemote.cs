@@ -8,7 +8,7 @@ using Renci.SshNet.Sftp;
 
 namespace GitBin.Remotes {
 
-    public class SSHRemote : IRemote {
+    public class SftpRemote : IRemote {
 
         public event Action<int> ProgressChanged;
 
@@ -18,12 +18,12 @@ namespace GitBin.Remotes {
         private string remote_path;
 
 
-        public SSHRemote (IConfigurationProvider configurationProvider)
+        public SftpRemote (IConfigurationProvider configurationProvider)
         {
             this.configurationProvider = configurationProvider;
 
-            Uri ssh_url = new Uri ((string) this.configurationProvider.Settings ["sshurl"]);
-            string ssh_private_key_file = (string) this.configurationProvider.Settings ["sshprivatekeyfile"];
+            Uri ssh_url = new Uri ((string) this.configurationProvider.Settings ["sftpurl"]);
+            string ssh_private_key_file = (string) this.configurationProvider.Settings ["sftpprivatekeyfile"];
 
             this.remote_path = ssh_url.AbsolutePath + "/chunks";
 
@@ -39,8 +39,8 @@ namespace GitBin.Remotes {
 
             string passphrase = "";
 
-            if (this.configurationProvider.Settings.ContainsKey ("sshprivatekeypassphrase"))
-                passphrase = (string) this.configurationProvider.Settings ["sshprivatekeypassphrase"];
+            if (this.configurationProvider.Settings.ContainsKey ("sftpprivatekeypassphrase"))
+                passphrase = (string) this.configurationProvider.Settings ["sftpprivatekeypassphrase"];
 
             this.client = new SftpClient (host, port, user, new PrivateKeyFile (ssh_private_key_file, passphrase));
             this.client.Connect ();

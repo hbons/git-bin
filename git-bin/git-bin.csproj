@@ -79,7 +79,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Remotes\IRemote.cs" />
-    <Compile Include="Remotes\SSHRemote.cs" />
+    <Compile Include="Remotes\SftpRemote.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
