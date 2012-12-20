@@ -15,7 +15,7 @@ namespace GitBin
 
     public class ConfigurationProvider : IConfigurationProvider
     {
-        public const long DefaultChunkSize = 1024*1024;
+        public const long DefaultChunkSize = 64 * 1024;
         public const long DefaultMaximumCacheSize = long.MaxValue;
 
         public const string DirectoryName = "git-bin";

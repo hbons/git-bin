@@ -19,13 +19,24 @@ $ git config --global filter.bin.clean "git bin clean %f"
 $ git config --global filter.bin.smudge "git bin smudge"
 ```
 
-Step 2: Supply your Amazon S3 information
+Step 2: Supply your backend information
+
+For the S3 backend:
 
 ```bash
 $ git config --global git-bin.s3bucket "your bucket name"
 $ git config --global git-bin.s3key "your key"
 $ git config --global git-bin.s3secretKey "your secret key"
 ```
+
+For the SSH/SFTP backend: 
+
+```bash
+$ git config --global git-bin.sshUrl "your ssh url to an sftp folder"
+$ git config --global git-bin.sshPrivateKeyFilePath "your private key"
+$ git config --global git-bin.sshPrivateKeyPassphrase "your passphrase to unlock the private key"
+```
+
 
 Step 3: Set up .gitattributes
 
