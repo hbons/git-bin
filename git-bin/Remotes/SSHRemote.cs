@@ -44,17 +44,15 @@ namespace GitBin.Remotes {
 
             this.client = new SftpClient (host, port, user, new PrivateKeyFile (ssh_private_key_file, passphrase));
             this.client.Connect ();
-       }
+       
+            if (!this.client.Exists (this.remote_path))
+                this.client.CreateDirectory (this.remote_path);             
+        }
         
         public GitBinFileInfo [] ListFiles ()
         {
             if (!this.client.IsConnected)
                 this.client.Connect ();
-
-            if (!this.client.Exists (this.remote_path)) {
-                this.client.CreateDirectory (this.remote_path);
-                return new GitBinFileInfo [0];
-            }
 
             List<GitBinFileInfo> files = new List<GitBinFileInfo> ();
 
