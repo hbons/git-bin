@@ -30,8 +30,15 @@ namespace GitBin.Commands
             GitBinConsole.Write("Smudging {0}...", document.Filename);
 
             DownloadMissingFiles(document.ChunkHashes);
-
             OutputReassembledChunks(document.ChunkHashes);
+/* TODO: move to SparkleShare
+            string filepath = Path.Combine (Environment.CurrentDirectory,
+                document.Filename.Replace("/", Path.DirectorySeparatorChar.ToString()));
+                
+            FileInfo fileInfo         = new FileInfo(filepath);
+            fileInfo.CreationTimeUtc  = new DateTime(1970, 1, 1).AddSeconds(document.CreationTime);
+            fileInfo.LastWriteTimeUtc = new DateTime(1970, 1, 1).AddSeconds(document.LastWriteTime);
+*/
         }
 
         private void DownloadMissingFiles(IEnumerable<string> chunkHashes)

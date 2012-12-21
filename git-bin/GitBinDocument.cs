@@ -9,6 +9,8 @@ namespace GitBin
     public class GitBinDocument
     {
         public string Filename { get; private set; }
+        public int CreationTime { get; private set; }
+        public int LastWriteTime { get; private set; }
         public List<string> ChunkHashes { get; private set; }
 
         public GitBinDocument()
@@ -19,6 +21,15 @@ namespace GitBin
         public GitBinDocument(string filename): this()
         {
             this.Filename = filename;
+
+            string filepath = Path.Combine(Environment.CurrentDirectory,
+                this.Filename.Replace("/", Path.DirectorySeparatorChar.ToString()));
+            
+            DateTime creationTimeUtc = new FileInfo(filepath).CreationTimeUtc;
+            this.CreationTime = (int) (creationTimeUtc - new DateTime(1970, 1, 1)).TotalSeconds;
+            
+            DateTime lastWriteTimeUtc = new FileInfo(filepath).LastWriteTimeUtc;
+            this.LastWriteTime = (int) (lastWriteTimeUtc - new DateTime(1970, 1, 1)).TotalSeconds;
         }
 
         public void RecordChunk(string hash)
