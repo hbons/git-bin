@@ -14,7 +14,6 @@ namespace GitBin.Remotes {
 
         private readonly IConfigurationProvider configurationProvider;
         private SftpClient client;
-
         private string remote_path;
 
 
@@ -22,14 +21,14 @@ namespace GitBin.Remotes {
         {
             this.configurationProvider = configurationProvider;
 
-            Uri ssh_url = new Uri ((string) this.configurationProvider.Settings ["sftpurl"]);
-            string ssh_private_key_file = (string) this.configurationProvider.Settings ["sftpprivatekeyfile"];
+            Uri sftp_url = new Uri ((string) this.configurationProvider.Settings ["sftpurl"]);
+            string sftp_key_file_path = (string) this.configurationProvider.Settings ["sftpprivatekeyfilepath"];
+            
+            this.remote_path = sftp_url.AbsolutePath + "/chunks";
 
-            this.remote_path = ssh_url.AbsolutePath + "/chunks";
-
-            string user = ssh_url.UserInfo.Split (":".ToCharArray ()) [0];
-            string host = ssh_url.Host;
-            int port    = ssh_url.Port;
+            string user = sftp_url.UserInfo.Split (":".ToCharArray ()) [0];
+            string host = sftp_url.Host;
+            int port    = sftp_url.Port;
 
             if (string.IsNullOrEmpty (user))
                 user = "storage";
@@ -38,17 +37,26 @@ namespace GitBin.Remotes {
                 port = 22;
 
             string passphrase = "";
-
+            
             if (this.configurationProvider.Settings.ContainsKey ("sftpprivatekeypassphrase"))
                 passphrase = (string) this.configurationProvider.Settings ["sftpprivatekeypassphrase"];
 
-            this.client = new SftpClient (host, port, user, new PrivateKeyFile (ssh_private_key_file, passphrase));
+            this.client = new SftpClient (host, port, user, new PrivateKeyFile (sftp_key_file_path, passphrase));
             this.client.Connect ();
        
-            if (!this.client.Exists (this.remote_path))
-                this.client.CreateDirectory (this.remote_path);             
+            if (!this.client.Exists (this.remote_path)) {
+                string path = "";
+
+                foreach (string part in this.remote_path.Split ("/".ToCharArray ())) {
+                    path += "/" + part;
+
+                    if (!this.client.Exists (path))
+                        this.client.CreateDirectory (path);  
+                }
+            }
         }
-        
+
+
         public GitBinFileInfo [] ListFiles ()
         {
             if (!this.client.IsConnected)
@@ -63,7 +71,8 @@ namespace GitBin.Remotes {
 
             return files.ToArray ();
         }
-        
+
+
         public void UploadFile (string full_path, string key)
         {
             try {
@@ -74,22 +83,22 @@ namespace GitBin.Remotes {
 
                 string target_remote_path = this.remote_path + "/" + key;
                 string tmp_remote_path    = target_remote_path + ".tmp";
-
+                
                 FileStream stream = new FileStream (full_path, FileMode.Open);
                 this.client.UploadFile (stream, tmp_remote_path);
                 stream.Close ();
-
+                
                 this.client.RenameFile (tmp_remote_path, target_remote_path);
+                File.Delete (full_path);
 
                 ProgressChanged (100);
-
-                File.Delete (full_path);
             
             } catch (Exception e) {
                 throw new ಠ_ಠ ("Error uploading chunk " + key, e);
             }
         }
-        
+
+
         public void DownloadFile (string full_path, string key)
         {
             try {
